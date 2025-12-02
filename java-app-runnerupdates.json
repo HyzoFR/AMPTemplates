@@ -1,0 +1,130 @@
+[
+    {
+        "UpdateStageName": "App Download",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && rm -rf srv >/dev/null 2>&1; DownloadSource=\\\"{{DownloadSource}}\\\"; DownloadBranch=\\\"{{DownloadBranch}}\\\"; [[ -n \\\"{{DownloadUsername}}\\\" ]] && DownloadUrl=\\\"${DownloadSource/https:\\/\\//https:\\/\\/{{DownloadUsername}}:{{DownloadPassword}}@}\\\" || DownloadUrl=\\\"$DownloadSource\\\"; [ ! -d .git ] && { echo \\\"Installing the app\\\" && git clone \\\"$DownloadUrl\\\" srv >/dev/null && \\cp -r srv/. ./ >/dev/null 2>&1 && rm -rf srv >/dev/null 2>&1 && [ -z \\\"$DownloadBranch\\\" ] && DownloadBranch=$(git symbolic-ref refs/remotes/origin/HEAD | sed \\\"s|.*/||\\\"); git checkout $DownloadBranch --force >/dev/null && git pull >/dev/null && echo \\\"App installed\\\"; } || { echo \\\"Updating the app\\\" && git remote set-url origin \\\"$DownloadUrl\\\" >/dev/null && [ -z \\\"$DownloadBranch\\\" ] && DownloadBranch=$(git symbolic-ref refs/remotes/origin/HEAD | sed \\\"s|.*/||\\\"); git checkout $DownloadBranch --force >/dev/null && git pull >/dev/null && echo \\\"App updated\\\"; }\"",
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GitRepo",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "App Download",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"$ProgressPreference='SilentlyContinue'; cd java-app-runner; Remove-Item srv -Recurse -Force -ErrorAction SilentlyContinue | Out-Null; $DownloadSource = \\\"{{DownloadSource}}\\\"; $DownloadBranch = \\\"{{DownloadBranch}}\\\"; if (![string]::IsNullOrEmpty(\\\"{{DownloadUsername}}\\\")) { $DownloadUrl = $DownloadSource -replace \\\"https://\\\", \\\"https://{{DownloadUsername}}:{{DownloadPassword}}@\\\" } else { $DownloadUrl = \\\"$DownloadSource\\\" }; if (-Not (Test-Path .git)) { Write-Output \\\"Installing the app\\\"; git clone \\\"$DownloadUrl\\\" srv 1> $null; Copy-Item srv/* ./ -Recurse -Force -ErrorAction SilentlyContinue | Out-Null; Remove-Item srv -Recurse -Force -ErrorAction SilentlyContinue | Out-Null; if ([string]::IsNullOrEmpty($DownloadBranch)) { $DownloadBranch = (git symbolic-ref refs/remotes/origin/HEAD) -replace '.*/' }; git checkout --force $DownloadBranch 1> $null; if ($LASTEXITCODE -eq 0) { git pull 1> $null }; if ($LASTEXITCODE -eq 0) { Write-Output \\\"App installed\\\" } } else { Write-Output \\\"Updating the app\\\"; git remote set-url origin \\\"$DownloadUrl\\\" 1> $null; if ([string]::IsNullOrEmpty($DownloadBranch)) { $DownloadBranch = (git symbolic-ref refs/remotes/origin/HEAD) -replace '.*/' }; git checkout --force $DownloadBranch 1> $null; if ($LASTEXITCODE -eq 0) { git pull 1> $null }; if ($LASTEXITCODE -eq 0) { Write-Output \\\"App updated\\\" } }\"",
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GitRepo",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "App Download",
+        "UpdateSourcePlatform": "All",
+        "UpdateSource": "GithubRelease",
+        "UpdateSourceArgs": "{{DownloadSource}}",
+        "UpdateSourceData": "{{DownloadFilename}}",
+        "UpdateSourceVersion": "{{DownloadVersion}}",
+        "UpdateSourceTarget": "{{$FullBaseDir}}",
+        "UnzipUpdateSource": true,
+        "OverwriteExistingFiles": true,
+        "DeleteAfterExtract": true,
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GithubRelease",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "App Download",
+        "UpdateSourcePlatform": "All",
+        "UpdateSource": "FetchURL",
+        "UpdateSourceData": "{{DownloadSource}}",
+        "UpdateSourceTarget": "{{$FullBaseDir}}",
+        "UnzipUpdateSource": true,
+        "OverwriteExistingFiles": true,
+        "DeleteAfterExtract": true,
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "DownloadURL",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "Java Download",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSourceArch": "x86_64",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && if [[ -x java/bin/java ]]; then InstalledVersion=$(java/bin/java --version | grep \\\"Temurin-\\\" | head -n1 | sed -n \\\"s/.*Temurin-\\([0-9][0-9]*\\(\\.[0-9][0-9]*\\.[0-9][0-9]*\\(\\.[0-9][0-9]*\\)?\\)?+[0-9][0-9]*\\).*/\\1/p\\\"); else InstalledVersion=\\\"\\\"; fi; LatestVersionBuild=$(wget -qO- \\\"https://api.adoptium.net/v3/assets/latest/{{SpecificInstanceJavaVersion}}/hotspot?architecture=x64&image_type=jdk&os=linux&vendor=eclipse\\\" | jq -r \\\".[0].version.openjdk_version\\\" | sed \\\"s/-LTS$//\\\"); if [[ \\\"$InstalledVersion\\\" == \\\"$LatestVersionBuild\\\" ]]; then echo \\\"Eclipse Temurin Java $LatestVersionBuild already installed. Skipping\\\" && exit 0; else [[ -f java.tar.gz ]] && rm -f java.tar.gz >/dev/null 2>&1; wget -qO java.tar.gz https://api.adoptium.net/v3/binary/latest/{{SpecificInstanceJavaVersion}}/ga/linux/x64/jdk/hotspot/normal/eclipse || { echo \\\"Download failed from the Eclipse Temurin CDN. This is a fault with the CDN, not AMP. Aborting\\\"; exit 1; }; mkdir -p java && rm -rf java/* >/dev/null 2>&1 && tar -xzf java.tar.gz -C java --strip-components=1 >/dev/null 2>&1 && rm -f java.tar.gz >/dev/null 2>&1 && chmod +x java/bin/java && echo \\\"Eclipse Temurin Java $LatestVersionBuild downloaded\\\"; fi\"",
+        "UpdateSourceConditionSetting": "JavaVersionLinux",
+        "UpdateSourceConditionValue": "java/bin/java",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "Java Download",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSourceArch": "aarch64",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && if [[ -x java/bin/java ]]; then InstalledVersion=$(java/bin/java --version | grep \\\"Temurin-\\\" | head -n1 | sed -n \\\"s/.*Temurin-\\([0-9][0-9]*\\(\\.[0-9][0-9]*\\.[0-9][0-9]*\\(\\.[0-9][0-9]*\\)?\\)?+[0-9][0-9]*\\).*/\\1/p\\\"); else InstalledVersion=\\\"\\\"; fi; LatestVersionBuild=$(wget -qO- \\\"https://api.adoptium.net/v3/assets/latest/{{SpecificInstanceJavaVersion}}/hotspot?architecture=aarch64&image_type=jdk&os=linux&vendor=eclipse\\\" | jq -r \\\".[0].version.openjdk_version\\\" | sed \\\"s/-LTS$//\\\"); if [[ \\\"$InstalledVersion\\\" == \\\"$LatestVersionBuild\\\" ]]; then echo \\\"Eclipse Temurin Java $LatestVersionBuild already installed. Skipping\\\" && exit 0; else [[ -f java.tar.gz ]] && rm -f java.tar.gz >/dev/null 2>&1; wget -qO java.tar.gz https://api.adoptium.net/v3/binary/latest/{{SpecificInstanceJavaVersion}}/ga/linux/aarch64/jdk/hotspot/normal/eclipse || { echo \\\"Download failed from the Eclipse Temurin CDN. This is a fault with the CDN, not AMP. Aborting\\\"; exit 1; }; mkdir -p java && rm -rf java/* >/dev/null 2>&1 && tar -xzf java.tar.gz -C java --strip-components=1 >/dev/null 2>&1 && rm -f java.tar.gz >/dev/null 2>&1 && chmod +x java/bin/java && echo \\\"Eclipse Temurin Java $LatestVersionBuild downloaded\\\"; fi\"",
+        "UpdateSourceConditionSetting": "JavaVersionLinux",
+        "UpdateSourceConditionValue": "java/bin/java",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "Java Download",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"$ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Set-Location -Path 'java-app-runner'; if (Test-Path 'java/bin/java.exe') { $InstalledVersion = (& java/bin/java.exe --version | Select-String -Pattern 'Temurin-(\\d+(?:\\.\\d+\\.\\d+(?:\\.\\d+)?)?\\+\\d+)' | Select-Object -First 1 | ForEach-Object { $_.Matches[0].Groups[1].Value }) } else { $InstalledVersion = '' }; $LatestVersionBuild = (Invoke-RestMethod -UseBasicParsing -Uri \\\"https://api.adoptium.net/v3/assets/latest/{{SpecificInstanceJavaVersion}}/hotspot?architecture=x64&image_type=jdk&os=windows&vendor=eclipse\\\")[0].version.openjdk_version -replace '-LTS$', ''; if ( $InstalledVersion -eq $LatestVersionBuild ) { Write-Output \\\"Eclipse Temurin Java $LatestVersionBuild already installed. Skipping\\\"; exit 0 } else { if ( Test-Path java.zip ) { Remove-Item java.zip -Force -ErrorAction SilentlyContinue *> $null }; try { Invoke-WebRequest -UseBasicParsing -Uri https://api.adoptium.net/v3/binary/latest/{{SpecificInstanceJavaVersion}}/ga/windows/x64/jdk/hotspot/normal/eclipse -OutFile java.zip -ErrorAction Stop } catch { Write-Output \\\"Download failed from the Eclipse Temurin CDN. This is a fault with the CDN, not AMP. Aborting\\\"; exit 1; }; Expand-Archive -Path \\\"java.zip\\\" -DestinationPath \\\".\\\" -Force *> $null; if ( Test-Path java.zip ) { Remove-Item java.zip -Force -ErrorAction SilentlyContinue *> $null }; if (Test-Path \\\"jdk-*\\\") { Remove-Item -Recurse -Force java -ErrorAction SilentlyContinue *> $null; Start-Sleep -Seconds 2; Get-ChildItem -Directory | Where-Object { $_.Name -like \\\"jdk-*\\\" } | Rename-Item -NewName \\\"java\\\" *> $null; Write-Output \\\"Eclipse Temurin Java $LatestVersionBuild downloaded\\\" } }\"",
+        "UpdateSourceConditionSetting": "JavaVersionWindows",
+        "UpdateSourceConditionValue": "java\\bin\\java.exe",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "Plugin Download",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && mkdir -p plugins && PluginSource=\\\"{{PluginSource}}\\\"; PluginVersion=\\\"{{PluginVersion}}\\\"; PluginToken=\\\"{{PluginGitHubToken}}\\\"; if [[ -z \\\"$PluginSource\\\" ]]; then echo \\\"Plugin source not configured. Skipping\\\"; exit 0; fi; if [[ -z \\\"$PluginVersion\\\" ]]; then ReleaseUrl=\\\"https://api.github.com/repos/$PluginSource/releases/latest\\\"; else ReleaseUrl=\\\"https://api.github.com/repos/$PluginSource/releases/tags/$PluginVersion\\\"; fi; echo \\\"Fetching plugin release info from $ReleaseUrl\\\"; if [[ -n \\\"$PluginToken\\\" ]]; then AuthHeader=\\\"Authorization: token $PluginToken\\\"; ReleaseData=$(wget -qO- --header=\\\"$AuthHeader\\\" \\\"$ReleaseUrl\\\"); else ReleaseData=$(wget -qO- \\\"$ReleaseUrl\\\"); fi; if [[ -z \\\"$ReleaseData\\\" ]]; then echo \\\"Failed to fetch release info. Check the Plugin GitHub Source and Version settings\\\"; exit 1; fi; AssetIds=$(echo \\\"$ReleaseData\\\" | jq -r '.assets[] | select(.name | endswith(\\\".jar\\\")) | \"\\(.id) \\(.name)\"'); if [[ -z \\\"$AssetIds\\\" ]]; then echo \\\"No .jar files found in the release\\\"; exit 1; fi; echo \\\"Downloading plugin JARs to plugins/ folder...\\\"; while IFS=' ' read -r assetId assetName; do echo \\\"Downloading $assetName\\\"; AssetUrl=\\\"https://api.github.com/repos/$PluginSource/releases/assets/$assetId\\\"; if [[ -n \\\"$PluginToken\\\" ]]; then wget -qO \\\"plugins/$assetName\\\" --header=\\\"Authorization: token $PluginToken\\\" --header=\\\"Accept: application/octet-stream\\\" \\\"$AssetUrl\\\" || echo \\\"Failed to download $assetName\\\"; else wget -qO \\\"plugins/$assetName\\\" --header=\\\"Accept: application/octet-stream\\\" \\\"$AssetUrl\\\" || echo \\\"Failed to download $assetName\\\"; fi; done <<< \\\"$AssetIds\\\"; echo \\\"Plugin download complete\\\"\"",
+        "UpdateSourceConditionSetting": "PluginsEnabled",
+        "UpdateSourceConditionValue": "true",
+        "UpdateSourceConditionSetting2": "PluginDownloadType",
+        "UpdateSourceConditionValue2": "GithubReleaseAssets",
+        "SkipOnFailure": true
+    },
+    {
+        "UpdateStageName": "Plugin Download",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"$ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Set-Location -Path 'java-app-runner'; if (-Not (Test-Path 'plugins')) { New-Item -ItemType Directory -Path 'plugins' | Out-Null }; $PluginSource = '{{PluginSource}}'; $PluginVersion = '{{PluginVersion}}'; $PluginToken = '{{PluginGitHubToken}}'; if ([string]::IsNullOrEmpty($PluginSource)) { Write-Output 'Plugin source not configured. Skipping'; exit 0 }; if ([string]::IsNullOrEmpty($PluginVersion)) { $ReleaseUrl = \\\"https://api.github.com/repos/$PluginSource/releases/latest\\\" } else { $ReleaseUrl = \\\"https://api.github.com/repos/$PluginSource/releases/tags/$PluginVersion\\\" }; $Headers = @{}; if (-Not [string]::IsNullOrEmpty($PluginToken)) { $Headers['Authorization'] = \\\"token $PluginToken\\\" }; Write-Output \\\"Fetching plugin release info from $ReleaseUrl\\\"; try { $ReleaseData = Invoke-RestMethod -UseBasicParsing -Uri $ReleaseUrl -Headers $Headers } catch { Write-Output 'Failed to fetch release info. Check the Plugin GitHub Source and Version settings'; exit 1 }; $JarAssets = $ReleaseData.assets | Where-Object { $_.name -like '*.jar' }; if ($JarAssets.Count -eq 0) { Write-Output 'No .jar files found in the release'; exit 1 }; Write-Output 'Downloading plugin JARs to plugins/ folder...'; foreach ($asset in $JarAssets) { Write-Output \\\"Downloading $($asset.name)\\\"; $AssetUrl = \\\"https://api.github.com/repos/$PluginSource/releases/assets/$($asset.id)\\\"; $DownloadHeaders = @{ 'Accept' = 'application/octet-stream' }; if (-Not [string]::IsNullOrEmpty($PluginToken)) { $DownloadHeaders['Authorization'] = \\\"token $PluginToken\\\" }; try { Invoke-WebRequest -UseBasicParsing -Uri $AssetUrl -Headers $DownloadHeaders -OutFile \\\"plugins/$($asset.name)\\\" } catch { Write-Output \\\"Failed to download $($asset.name)\\\" } }; Write-Output 'Plugin download complete'\"",
+        "UpdateSourceConditionSetting": "PluginsEnabled",
+        "UpdateSourceConditionValue": "true",
+        "UpdateSourceConditionSetting2": "PluginDownloadType",
+        "UpdateSourceConditionValue2": "GithubReleaseAssets",
+        "SkipOnFailure": true
+    },
+    {
+        "UpdateStageName": "Plugin Download",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && mkdir -p plugins && PluginSource=\\\"{{PluginSource}}\\\"; PluginVersion=\\\"{{PluginVersion}}\\\"; PluginZipFilename=\\\"{{PluginZipFilename}}\\\"; PluginToken=\\\"{{PluginGitHubToken}}\\\"; if [[ -z \\\"$PluginSource\\\" ]]; then echo \\\"Plugin source not configured. Skipping\\\"; exit 0; fi; if [[ -z \\\"$PluginZipFilename\\\" ]]; then echo \\\"Plugin zip filename not configured. Skipping\\\"; exit 0; fi; if [[ -z \\\"$PluginVersion\\\" ]]; then ReleaseUrl=\\\"https://api.github.com/repos/$PluginSource/releases/latest\\\"; else ReleaseUrl=\\\"https://api.github.com/repos/$PluginSource/releases/tags/$PluginVersion\\\"; fi; echo \\\"Fetching plugin release info from $ReleaseUrl\\\"; if [[ -n \\\"$PluginToken\\\" ]]; then AuthHeader=\\\"Authorization: token $PluginToken\\\"; ReleaseData=$(wget -qO- --header=\\\"$AuthHeader\\\" \\\"$ReleaseUrl\\\"); else ReleaseData=$(wget -qO- \\\"$ReleaseUrl\\\"); fi; if [[ -z \\\"$ReleaseData\\\" ]]; then echo \\\"Failed to fetch release info. Check the Plugin GitHub Source and Version settings\\\"; exit 1; fi; AssetId=$(echo \\\"$ReleaseData\\\" | jq -r --arg filename \\\"$PluginZipFilename\\\" '.assets[] | select(.name == $filename) | .id'); if [[ -z \\\"$AssetId\\\" || \\\"$AssetId\\\" == \\\"null\\\" ]]; then echo \\\"Zip file '$PluginZipFilename' not found in the release\\\"; exit 1; fi; AssetUrl=\\\"https://api.github.com/repos/$PluginSource/releases/assets/$AssetId\\\"; echo \\\"Downloading $PluginZipFilename...\\\"; if [[ -n \\\"$PluginToken\\\" ]]; then wget -qO \\\"plugins.zip\\\" --header=\\\"Authorization: token $PluginToken\\\" --header=\\\"Accept: application/octet-stream\\\" \\\"$AssetUrl\\\" || { echo \\\"Failed to download $PluginZipFilename\\\"; exit 1; }; else wget -qO \\\"plugins.zip\\\" --header=\\\"Accept: application/octet-stream\\\" \\\"$AssetUrl\\\" || { echo \\\"Failed to download $PluginZipFilename\\\"; exit 1; }; fi; echo \\\"Extracting to plugins/ folder...\\\"; unzip -o \\\"plugins.zip\\\" -d \\\"plugins/\\\" >/dev/null 2>&1 && rm -f \\\"plugins.zip\\\"; echo \\\"Plugin download complete\\\"\"",
+        "UpdateSourceConditionSetting": "PluginsEnabled",
+        "UpdateSourceConditionValue": "true",
+        "UpdateSourceConditionSetting2": "PluginDownloadType",
+        "UpdateSourceConditionValue2": "GithubReleaseZip",
+        "SkipOnFailure": true
+    },
+    {
+        "UpdateStageName": "Plugin Download",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"$ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Set-Location -Path 'java-app-runner'; if (-Not (Test-Path 'plugins')) { New-Item -ItemType Directory -Path 'plugins' | Out-Null }; $PluginSource = '{{PluginSource}}'; $PluginVersion = '{{PluginVersion}}'; $PluginZipFilename = '{{PluginZipFilename}}'; $PluginToken = '{{PluginGitHubToken}}'; if ([string]::IsNullOrEmpty($PluginSource)) { Write-Output 'Plugin source not configured. Skipping'; exit 0 }; if ([string]::IsNullOrEmpty($PluginZipFilename)) { Write-Output 'Plugin zip filename not configured. Skipping'; exit 0 }; if ([string]::IsNullOrEmpty($PluginVersion)) { $ReleaseUrl = \\\"https://api.github.com/repos/$PluginSource/releases/latest\\\" } else { $ReleaseUrl = \\\"https://api.github.com/repos/$PluginSource/releases/tags/$PluginVersion\\\" }; $Headers = @{}; if (-Not [string]::IsNullOrEmpty($PluginToken)) { $Headers['Authorization'] = \\\"token $PluginToken\\\" }; Write-Output \\\"Fetching plugin release info from $ReleaseUrl\\\"; try { $ReleaseData = Invoke-RestMethod -UseBasicParsing -Uri $ReleaseUrl -Headers $Headers } catch { Write-Output 'Failed to fetch release info. Check the Plugin GitHub Source and Version settings'; exit 1 }; $ZipAsset = $ReleaseData.assets | Where-Object { $_.name -eq $PluginZipFilename }; if ($null -eq $ZipAsset) { Write-Output \\\"Zip file '$PluginZipFilename' not found in the release\\\"; exit 1 }; $AssetUrl = \\\"https://api.github.com/repos/$PluginSource/releases/assets/$($ZipAsset.id)\\\"; $DownloadHeaders = @{ 'Accept' = 'application/octet-stream' }; if (-Not [string]::IsNullOrEmpty($PluginToken)) { $DownloadHeaders['Authorization'] = \\\"token $PluginToken\\\" }; Write-Output \\\"Downloading $PluginZipFilename...\\\"; try { Invoke-WebRequest -UseBasicParsing -Uri $AssetUrl -Headers $DownloadHeaders -OutFile 'plugins.zip' } catch { Write-Output \\\"Failed to download $PluginZipFilename\\\"; exit 1 }; Write-Output 'Extracting to plugins/ folder...'; Expand-Archive -Path 'plugins.zip' -DestinationPath 'plugins' -Force; Remove-Item 'plugins.zip' -Force -ErrorAction SilentlyContinue; Write-Output 'Plugin download complete'\"",
+        "UpdateSourceConditionSetting": "PluginsEnabled",
+        "UpdateSourceConditionValue": "true",
+        "UpdateSourceConditionSetting2": "PluginDownloadType",
+        "UpdateSourceConditionValue2": "GithubReleaseZip",
+        "SkipOnFailure": true
+    }
+]
