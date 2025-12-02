@@ -3,7 +3,7 @@
         "UpdateStageName": "Downloading velocity jar file",
         "UpdateSourcePlatform": "All",
         "UpdateSource": "FetchURL",
-        "UpdateSourceData": "https://fill.papermc.io/v3/projects/velocity/versions/3.4.0-SNAPSHOT/builds/latest",
+        "UpdateSourceData": "https://fill-data.papermc.io/v1/objects/40cae75987dd549e1dfd5170394166ddaeceb576f095935cf331f8f924278d5c/velocity-3.4.0-SNAPSHOT-557.jar",
         "UnzipUpdateSource": false,
         "OverwriteExistingFiles": true,
         "DeleteAfterExtract": false,
