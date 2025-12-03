@@ -48,6 +48,26 @@
         "SkipOnFailure": false
     },
     {
+        "UpdateStageName": "Rename Downloaded File",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && JarName=\\\"{{JarName}}\\\"; DownloadFilename=\\\"{{DownloadFilename}}\\\"; if [[ -z \\\"$JarName\\\" ]]; then echo \\\"Jar Name not configured. Skipping rename\\\"; exit 0; fi; if [[ -z \\\"$DownloadFilename\\\" ]]; then echo \\\"Download filename not configured. Skipping rename\\\"; exit 0; fi; if [[ \\\"$DownloadFilename\\\" == \\\"$JarName\\\" ]]; then echo \\\"Filenames match. No rename needed\\\"; exit 0; fi; if [[ -f \\\"$DownloadFilename\\\" ]]; then mv \\\"$DownloadFilename\\\" \\\"$JarName\\\" && echo \\\"Renamed $DownloadFilename to $JarName\\\"; else echo \\\"File $DownloadFilename not found. Skipping rename\\\"; fi\"",
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GithubRelease",
+        "SkipOnFailure": true
+    },
+    {
+        "UpdateStageName": "Rename Downloaded File",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"Set-Location -Path 'java-app-runner'; $JarName = '{{JarName}}'; $DownloadFilename = '{{DownloadFilename}}'; if ([string]::IsNullOrEmpty($JarName)) { Write-Output 'Jar Name not configured. Skipping rename'; exit 0 }; if ([string]::IsNullOrEmpty($DownloadFilename)) { Write-Output 'Download filename not configured. Skipping rename'; exit 0 }; if ($DownloadFilename -eq $JarName) { Write-Output 'Filenames match. No rename needed'; exit 0 }; if (Test-Path $DownloadFilename) { Rename-Item -Path $DownloadFilename -NewName $JarName -Force; Write-Output \\\"Renamed $DownloadFilename to $JarName\\\" } else { Write-Output \\\"File $DownloadFilename not found. Skipping rename\\\" }\"",
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GithubRelease",
+        "SkipOnFailure": true
+    },
+    {
         "UpdateStageName": "Java Download",
         "UpdateSourcePlatform": "Linux",
         "UpdateSourceArch": "x86_64",
