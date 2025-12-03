@@ -20,6 +20,26 @@
         "SkipOnFailure": false
     },
     {
+        "UpdateStageName": "Configure server.properties",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd java-app-runner && if [[ -f server.properties ]]; then sed -i 's/%SERVER_NAME%/{{ServerName}}/g' server.properties && sed -i 's/%SERVER_PORT%/{{ServerPort}}/g' server.properties && echo 'server.properties configured'; else echo 'server.properties not found. Skipping'; fi\"",
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GitRepo",
+        "SkipOnFailure": true
+    },
+    {
+        "UpdateStageName": "Configure server.properties",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"Set-Location -Path 'java-app-runner'; if (Test-Path 'server.properties') { $content = Get-Content 'server.properties' -Raw; $content = $content -replace '%SERVER_NAME%', '{{ServerName}}'; $content = $content -replace '%SERVER_PORT%', '{{ServerPort}}'; Set-Content 'server.properties' -Value $content -NoNewline; Write-Output 'server.properties configured' } else { Write-Output 'server.properties not found. Skipping' }\"",
+        "UpdateSourceConditionSetting": "DownloadType",
+        "UpdateSourceConditionValue": "GitRepo",
+        "SkipOnFailure": true
+    },
+    {
         "UpdateStageName": "App Download",
         "UpdateSourcePlatform": "All",
         "UpdateSource": "GithubRelease",
