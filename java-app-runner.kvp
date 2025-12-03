@@ -1,5 +1,5 @@
-Meta.DisplayName=Hyzo Java App Runner
-Meta.Description=Hyzo Java App Runner
+Meta.DisplayName=Hyzo
+Meta.Description=Java
 Meta.OS=Windows, Linux
 Meta.AarchSupport=Native
 Meta.Arch=All
@@ -24,7 +24,7 @@ Meta.NoCommercialUsage=False
 Meta.ConfigVersion=6
 Meta.ReleaseNotes=
 Meta.BreakingReleaseNotes=
-Meta.AppConfigId=521c9ad3-f8cd-40b2-9026-9122f9490405
+Meta.AppConfigId=521c9ad3-f8cd-40b2-9026-9122f9490401
 App.DisplayName=Java App Runner
 App.RootDir=./java-app-runner/
 App.BaseDirectory=./java-app-runner/
