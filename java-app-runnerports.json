@@ -1,7 +1,7 @@
 [
     {
         "Protocol": "Both",
-        "Port": "{{ServerPort}}",
+        "Port": 25565,
         "Ref": "ServerPort",
         "Name": "Main Port",
         "Description": "Main port for incoming traffic"
