@@ -223,5 +223,29 @@
         "InputType": "hidden",
         "ParamFieldName": "EnvVars",
         "EnumValues": {}
+    },
+    {
+        "DisplayName": "Server Name",
+        "Category": "Java App Runner:code",
+        "Subcategory": "Server:server:4",
+        "Description": "Sets the server name. Replaces %SERVER_NAME% in server.properties when using Git repo download",
+        "Keywords": "server,name,ServerName",
+        "FieldName": "ServerName",
+        "InputType": "text",
+        "ParamFieldName": "ServerName",
+        "DefaultValue": "A Minecraft Server",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "Server Port",
+        "Category": "Java App Runner:code",
+        "Subcategory": "Server:server:4",
+        "Description": "Sets the server port. Replaces %SERVER_PORT% in server.properties when using Git repo download",
+        "Keywords": "server,port,ServerPort",
+        "FieldName": "ServerPort",
+        "InputType": "number",
+        "ParamFieldName": "ServerPort",
+        "DefaultValue": "25565",
+        "EnumValues": {}
     }
 ]
