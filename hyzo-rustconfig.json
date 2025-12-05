@@ -1,0 +1,117 @@
+[
+    {
+        "DisplayName": "Git Repo URL",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "Download:download:1",
+        "Description": "Sets the Git repository URL (https://github.com/user/repo.git)",
+        "Keywords": "git,repo,url,DownloadSource",
+        "FieldName": "DownloadSource",
+        "InputType": "text",
+        "ParamFieldName": "DownloadSource",
+        "DefaultValue": "",
+        "Placeholder": "https://github.com/user/repo.git",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "Git Repo Branch",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "Download:download:1",
+        "Description": "Sets the branch to clone/pull. Empty = default branch",
+        "Keywords": "git,repo,branch,DownloadBranch",
+        "FieldName": "DownloadBranch",
+        "InputType": "text",
+        "ParamFieldName": "DownloadBranch",
+        "DefaultValue": "",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "GitHub PAT (Token)",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "Download:download:1",
+        "Description": "Personal Access Token for private repositories. Leave empty for public repos",
+        "Keywords": "git,token,pat,password,DownloadPassword",
+        "FieldName": "DownloadPassword",
+        "InputType": "password",
+        "ParamFieldName": "DownloadPassword",
+        "DefaultValue": "",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "Build Mode",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "App:settings:2",
+        "Description": "Release mode is optimized for production. Debug mode includes debug symbols",
+        "Keywords": "release,debug,mode,ReleaseMode",
+        "FieldName": "ReleaseMode",
+        "InputType": "enum",
+        "ParamFieldName": "ReleaseMode",
+        "DefaultValue": "--release",
+        "EnumValues": {
+            "--release": "Release",
+            "": "Debug"
+        }
+    },
+    {
+        "DisplayName": "Cargo Features",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "App:settings:2",
+        "Description": "Cargo features to enable (e.g., --features feature1,feature2)",
+        "Keywords": "cargo,features,CargoFeatures",
+        "FieldName": "CargoFeatures",
+        "InputType": "text",
+        "ParamFieldName": "CargoFeatures",
+        "DefaultValue": "",
+        "Placeholder": "--features feature1,feature2",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "Cargo Arguments",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "App:settings:2",
+        "Description": "Additional arguments passed to cargo (before --)",
+        "Keywords": "cargo,args,arguments,CargoArgs",
+        "FieldName": "CargoArgs",
+        "InputType": "text",
+        "ParamFieldName": "CargoArgs",
+        "DefaultValue": "",
+        "Placeholder": "--package mypackage",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "App Arguments",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "App:settings:2",
+        "Description": "Arguments passed to the application (after --)",
+        "Keywords": "app,args,arguments,AppArgs",
+        "FieldName": "AppArgs",
+        "InputType": "text",
+        "ParamFieldName": "AppArgs",
+        "DefaultValue": "",
+        "Placeholder": "--port 8080",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "App Subdirectory",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "App:settings:2",
+        "Description": "Subdirectory where the Cargo.toml is located (relative to repo root)",
+        "Keywords": "app,directory,subdirectory,path,AppDir",
+        "FieldName": "AppDir",
+        "InputType": "text",
+        "ParamFieldName": "AppDir",
+        "DefaultValue": "",
+        "EnumValues": {}
+    },
+    {
+        "DisplayName": "Server Port",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "Server:server:3",
+        "Description": "Main port for the application",
+        "Keywords": "server,port,ServerPort",
+        "FieldName": "ServerPort",
+        "InputType": "number",
+        "ParamFieldName": "ServerPort",
+        "DefaultValue": "8080",
+        "EnumValues": {}
+    }
+]
