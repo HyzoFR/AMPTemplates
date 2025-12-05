@@ -16,27 +16,11 @@
         "SkipOnFailure": false
     },
     {
-        "UpdateStageName": "Install Rust",
-        "UpdateSourcePlatform": "Linux",
-        "UpdateSource": "Executable",
-        "UpdateSourceData": "/bin/bash",
-        "UpdateSourceArgs": "-c \"export RUSTUP_HOME=\\\"$HOME/.rustup\\\"; export CARGO_HOME=\\\"$HOME/.cargo\\\"; if [[ -f \\\"$CARGO_HOME/bin/cargo\\\" ]]; then echo \\\"Rust already installed. Updating...\\\"; $CARGO_HOME/bin/rustup update stable >/dev/null 2>&1; echo \\\"Rust updated\\\"; else echo \\\"Installing Rust...\\\"; curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable >/dev/null 2>&1; echo \\\"Rust installed\\\"; fi\"",
-        "SkipOnFailure": false
-    },
-    {
-        "UpdateStageName": "Install Rust",
-        "UpdateSourcePlatform": "Windows",
-        "UpdateSource": "Executable",
-        "UpdateSourceData": "powershell.exe",
-        "UpdateSourceArgs": "-NoProfile -Command \"$ProgressPreference='SilentlyContinue'; $cargoPath = \\\"$env:USERPROFILE\\.cargo\\\\bin\\\\cargo.exe\\\"; if (Test-Path $cargoPath) { Write-Output 'Rust already installed. Updating...'; & \\\"$env:USERPROFILE\\.cargo\\\\bin\\\\rustup.exe\\\" update stable 2>&1 | Out-Null; Write-Output 'Rust updated' } else { Write-Output 'Installing Rust...'; Invoke-WebRequest -Uri 'https://win.rustup.rs/x86_64' -OutFile 'rustup-init.exe'; Start-Process -FilePath '.\\\\rustup-init.exe' -ArgumentList '-y --default-toolchain stable' -Wait -NoNewWindow; Remove-Item 'rustup-init.exe' -Force -ErrorAction SilentlyContinue; Write-Output 'Rust installed' }\"",
-        "SkipOnFailure": false
-    },
-    {
         "UpdateStageName": "Build App",
         "UpdateSourcePlatform": "Linux",
         "UpdateSource": "Executable",
         "UpdateSourceData": "/bin/bash",
-        "UpdateSourceArgs": "-c \"export CARGO_HOME=\\\"$HOME/.cargo\\\"; export PATH=\\\"$CARGO_HOME/bin:$PATH\\\"; cd hyzo-rust && echo 'Building Rust application...' && cargo build {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} && echo 'Build complete'\"",
+        "UpdateSourceArgs": "-c \"cd hyzo-rust && echo 'Building Rust application...' && cargo build {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} && echo 'Build complete'\"",
         "SkipOnFailure": false
     },
     {
@@ -44,7 +28,7 @@
         "UpdateSourcePlatform": "Windows",
         "UpdateSource": "Executable",
         "UpdateSourceData": "powershell.exe",
-        "UpdateSourceArgs": "-NoProfile -Command \"$env:PATH = \\\"$env:USERPROFILE\\.cargo\\\\bin;$env:PATH\\\"; Set-Location -Path 'hyzo-rust'; Write-Output 'Building Rust application...'; cargo build {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}}; if ($LASTEXITCODE -eq 0) { Write-Output 'Build complete' } else { exit 1 }\"",
+        "UpdateSourceArgs": "-NoProfile -Command \"Set-Location -Path 'hyzo-rust'; Write-Output 'Building Rust application...'; cargo build {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}}; if ($LASTEXITCODE -eq 0) { Write-Output 'Build complete' } else { exit 1 }\"",
         "SkipOnFailure": false
     }
 ]

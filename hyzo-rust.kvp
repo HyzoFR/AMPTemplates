@@ -32,8 +32,8 @@ App.SteamWorkshopDownloadLocation=
 App.ExecutableWin=cmd.exe
 App.ExecutableLinux=/bin/bash
 App.WorkingDir={{AppDir}}
-App.LinuxCommandLineArgs=-c "export CARGO_HOME=\"$HOME/.cargo\"; export PATH=\"$CARGO_HOME/bin:$PATH\"; cd {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
-App.WindowsCommandLineArgs=/c "set PATH=%USERPROFILE%\.cargo\bin;%PATH% && cd /d {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
+App.LinuxCommandLineArgs=-c "cd {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
+App.WindowsCommandLineArgs=/c "cd /d {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
 App.CommandLineArgs=
 App.UseLinuxIOREDIR=False
 App.AppSettings={}
