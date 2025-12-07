@@ -32,8 +32,8 @@ App.SteamWorkshopDownloadLocation=
 App.ExecutableWin=cmd.exe
 App.ExecutableLinux=/bin/bash
 App.WorkingDir={{AppDir}}
-App.LinuxCommandLineArgs=-c "export RUSTUP_HOME=\"{{$FullBaseDir}}../.rustup\" CARGO_HOME=\"{{$FullBaseDir}}../.cargo\" PATH=\"{{$FullBaseDir}}../.cargo/bin:$PATH\" && cd {{AppDir}} && [ -n '{{EnvContent}}' ] && echo -e '{{EnvContent}}' > .env; cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
-App.WindowsCommandLineArgs=/c "set RUSTUP_HOME={{$FullBaseDir}}..\.rustup && set CARGO_HOME={{$FullBaseDir}}..\.cargo && set PATH={{$FullBaseDir}}..\.cargo\bin;%PATH% && cd /d {{AppDir}} && powershell -NoProfile -Command \"if ('{{EnvContent}}') { $content = '{{EnvContent}}' -replace '\\n', \\\"`n\\\"; Set-Content -Path '.env' -Value $content }\" && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
+App.LinuxCommandLineArgs=-c "export RUSTUP_HOME=\"{{$FullBaseDir}}../.rustup\" CARGO_HOME=\"{{$FullBaseDir}}../.cargo\" PATH=\"{{$FullBaseDir}}../.cargo/bin:$PATH\" && cd {{AppDir}} && echo -e '{{EnvContent}}' > .env && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
+App.WindowsCommandLineArgs=/c "set RUSTUP_HOME={{$FullBaseDir}}..\.rustup && set CARGO_HOME={{$FullBaseDir}}..\.cargo && set PATH={{$FullBaseDir}}..\.cargo\bin;%PATH% && cd /d {{AppDir}} && powershell -NoProfile -Command \"$content = '{{EnvContent}}' -replace '\\n', \\\"`n\\\"; Set-Content -Path '.env' -Value $content\" && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
 App.CommandLineArgs=
 App.UseLinuxIOREDIR=False
 App.AppSettings={}
