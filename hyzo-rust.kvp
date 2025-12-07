@@ -32,8 +32,8 @@ App.SteamWorkshopDownloadLocation=
 App.ExecutableWin=cmd.exe
 App.ExecutableLinux=/bin/bash
 App.WorkingDir={{AppDir}}
-App.LinuxCommandLineArgs=-c "cd {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
-App.WindowsCommandLineArgs=/c "cd /d {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
+App.LinuxCommandLineArgs=-c "export RUSTUP_HOME=\"$PWD/.rustup\" CARGO_HOME=\"$PWD/.cargo\" PATH=\"$PWD/.cargo/bin:$PATH\" && cd {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
+App.WindowsCommandLineArgs=/c "set RUSTUP_HOME=%CD%\.rustup && set CARGO_HOME=%CD%\.cargo && set PATH=%CD%\.cargo\bin;%PATH% && cd /d {{AppDir}} && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
 App.CommandLineArgs=
 App.UseLinuxIOREDIR=False
 App.AppSettings={}
