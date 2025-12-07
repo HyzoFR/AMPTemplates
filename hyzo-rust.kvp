@@ -29,15 +29,15 @@ App.DisplayName=Hyzo Rust Runner
 App.RootDir=./hyzo-rust/
 App.BaseDirectory=./hyzo-rust/
 App.SteamWorkshopDownloadLocation=
-App.ExecutableWin=cmd.exe
-App.ExecutableLinux=/bin/bash
-App.WorkingDir=
-App.LinuxCommandLineArgs=-c "export RUSTUP_HOME=\"$PWD/../.rustup\" CARGO_HOME=\"$PWD/../.cargo\" PATH=\"$PWD/../.cargo/bin:$PATH\" && cd {{AppDir}} && echo -e '{{EnvContent}}' > .env && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
-App.WindowsCommandLineArgs=/c "set RUSTUP_HOME=%CD%\..\..\.rustup && set CARGO_HOME=%CD%\..\..\.cargo && set PATH=%CD%\..\..\.cargo\bin;%PATH% && cd /d {{AppDir}} && powershell -NoProfile -Command \"$content = '{{EnvContent}}' -replace '\\n', \\\"`n\\\"; Set-Content -Path '.env' -Value $content\" && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}"
-App.CommandLineArgs=
+App.ExecutableWin={{$FullRootDir}}.cargo\bin\cargo.exe
+App.ExecutableLinux={{$FullRootDir}}.cargo/bin/cargo
+App.WorkingDir=./{{AppDir}}
+App.LinuxCommandLineArgs=
+App.WindowsCommandLineArgs=
+App.CommandLineArgs=run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}
 App.UseLinuxIOREDIR=False
 App.AppSettings={}
-App.EnvironmentVariables={}
+App.EnvironmentVariables={"RUSTUP_HOME":"{{$FullRootDir}}.rustup","CARGO_HOME":"{{$FullRootDir}}.cargo","PATH":"{{$FullRootDir}}.cargo/bin:%PATH%"}
 App.CommandLineParameterFormat={0}={1}
 App.CommandLineParameterDelimiter= 
 App.ExitMethod=OS_CLOSE
@@ -67,7 +67,7 @@ App.RCONHeartbeatMinutes=0
 App.RCONHeartbeatCommand=ping
 App.TelnetLoginFormat={0}
 App.UpdateSources=@IncludeJson[hyzo-rustupdates.json]
-App.PreStartStages=[]
+App.PreStartStages=@IncludeJson[hyzo-ruststart.json]
 App.ForceUpdate=False
 App.ForceUpdateReason=
 App.Compatibility=None
