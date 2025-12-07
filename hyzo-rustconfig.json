@@ -113,5 +113,18 @@
         "ParamFieldName": "ServerPort",
         "DefaultValue": "8080",
         "EnumValues": {}
+    },
+    {
+        "DisplayName": "Environment Variables (.env)",
+        "Category": "Hyzo Rust:code",
+        "Subcategory": "App:settings:2",
+        "Description": "Content of the .env file. Each line should be KEY=VALUE format",
+        "Keywords": "env,environment,variables,dotenv,EnvContent",
+        "FieldName": "EnvContent",
+        "InputType": "textarea",
+        "ParamFieldName": "EnvContent",
+        "DefaultValue": "",
+        "Placeholder": "DATABASE_URL=postgres://localhost/mydb\nAPI_KEY=your_api_key",
+        "EnumValues": {}
     }
 ]

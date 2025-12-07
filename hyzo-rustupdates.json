@@ -32,6 +32,26 @@
         "SkipOnFailure": false
     },
     {
+        "UpdateStageName": "Write .env",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cd hyzo-rust && echo '{{EnvContent}}' > .env && echo '.env file written'\"",
+        "UpdateSourceConditionSetting": "EnvContent",
+        "UpdateSourceConditionValue": "!",
+        "SkipOnFailure": true
+    },
+    {
+        "UpdateStageName": "Write .env",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"Set-Location -Path 'hyzo-rust'; Set-Content -Path '.env' -Value '{{EnvContent}}' -NoNewline; Write-Output '.env file written'\"",
+        "UpdateSourceConditionSetting": "EnvContent",
+        "UpdateSourceConditionValue": "!",
+        "SkipOnFailure": true
+    },
+    {
         "UpdateStageName": "Build App",
         "UpdateSourcePlatform": "Linux",
         "UpdateSource": "Executable",
