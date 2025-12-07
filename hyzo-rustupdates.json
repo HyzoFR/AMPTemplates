@@ -72,7 +72,7 @@
         "UpdateSourcePlatform": "Linux",
         "UpdateSource": "Executable",
         "UpdateSourceData": "/bin/bash",
-        "UpdateSourceArgs": "-c \"export RUSTUP_HOME=\\\"$PWD/.rustup\\\" CARGO_HOME=\\\"$PWD/.cargo\\\" PATH=\\\"$PWD/.cargo/bin:$PATH\\\"; cd hyzo-rust/{{AppDir}} && echo 'Starting Rust application...' && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\"",
+        "UpdateSourceArgs": "-c \"export RUSTUP_HOME=\\\"$PWD/.rustup\\\" CARGO_HOME=\\\"$PWD/.cargo\\\" PATH=\\\"$PWD/.cargo/bin:$PATH\\\"; cd hyzo-rust/{{AppDir}} && echo -e '{{EnvContent}}' > .env && echo 'Starting Rust application...' && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\"",
         "SkipOnFailure": false
     },
     {
@@ -80,7 +80,7 @@
         "UpdateSourcePlatform": "Windows",
         "UpdateSource": "Executable",
         "UpdateSourceData": "powershell.exe",
-        "UpdateSourceArgs": "-NoProfile -Command \"$env:RUSTUP_HOME = \\\"$PWD\\.rustup\\\"; $env:CARGO_HOME = \\\"$PWD\\.cargo\\\"; $env:PATH = \\\"$PWD\\.cargo\\bin;$env:PATH\\\"; Set-Location -Path 'hyzo-rust\\{{AppDir}}'; Write-Output 'Starting Rust application...'; cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\"",
+        "UpdateSourceArgs": "-NoProfile -Command \"$env:RUSTUP_HOME = \\\"$PWD\\.rustup\\\"; $env:CARGO_HOME = \\\"$PWD\\.cargo\\\"; $env:PATH = \\\"$PWD\\.cargo\\bin;$env:PATH\\\"; Set-Location -Path 'hyzo-rust\\{{AppDir}}'; $content = '{{EnvContent}}' -replace '\\\\n', \\\"`n\\\"; Set-Content -Path '.env' -Value $content; Write-Output 'Starting Rust application...'; cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\"",
         "SkipOnFailure": false
     }
 ]
