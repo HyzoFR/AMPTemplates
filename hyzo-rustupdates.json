@@ -67,20 +67,4 @@
         "UpdateSourceArgs": "-NoProfile -Command \"$env:RUSTUP_HOME = \\\"$PWD\\.rustup\\\"; $env:CARGO_HOME = \\\"$PWD\\.cargo\\\"; $env:PATH = \\\"$PWD\\.cargo\\bin;$env:PATH\\\"; Set-Location -Path 'hyzo-rust'; Write-Output 'Building Rust application...'; cargo build {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}}; if ($LASTEXITCODE -eq 0) { Write-Output 'Build complete' } else { exit 1 }\"",
         "SkipOnFailure": false
     },
-    {
-        "UpdateStageName": "Run App",
-        "UpdateSourcePlatform": "Linux",
-        "UpdateSource": "Executable",
-        "UpdateSourceData": "/bin/bash",
-        "UpdateSourceArgs": "-c \"export RUSTUP_HOME=\\\"$PWD/.rustup\\\" CARGO_HOME=\\\"$PWD/.cargo\\\" PATH=\\\"$PWD/.cargo/bin:$PATH\\\"; cd hyzo-rust/{{AppDir}} && echo -e '{{EnvContent}}' > .env && echo 'Starting Rust application...' && cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\"",
-        "SkipOnFailure": false
-    },
-    {
-        "UpdateStageName": "Run App",
-        "UpdateSourcePlatform": "Windows",
-        "UpdateSource": "Executable",
-        "UpdateSourceData": "powershell.exe",
-        "UpdateSourceArgs": "-NoProfile -Command \"$env:RUSTUP_HOME = \\\"$PWD\\.rustup\\\"; $env:CARGO_HOME = \\\"$PWD\\.cargo\\\"; $env:PATH = \\\"$PWD\\.cargo\\bin;$env:PATH\\\"; Set-Location -Path 'hyzo-rust\\{{AppDir}}'; $content = '{{EnvContent}}' -replace '\\\\n', \\\"`n\\\"; Set-Content -Path '.env' -Value $content; Write-Output 'Starting Rust application...'; cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\"",
-        "SkipOnFailure": false
-    }
 ]
