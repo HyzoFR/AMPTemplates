@@ -46,5 +46,21 @@
         "UpdateSourceData": "powershell.exe",
         "UpdateSourceArgs": "-NoProfile -Command \"$env:RUSTUP_HOME = \\\"$PWD\\.rustup\\\"; $env:CARGO_HOME = \\\"$PWD\\.cargo\\\"; $env:PATH = \\\"$PWD\\.cargo\\bin;$env:PATH\\\"; Set-Location -Path 'hyzo-rust'; Write-Output 'Building Rust application...'; cargo build {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}}; if ($LASTEXITCODE -eq 0) { Write-Output 'Build complete' } else { exit 1 }\"",
         "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "Create Run Script",
+        "UpdateSourcePlatform": "Linux",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "/bin/bash",
+        "UpdateSourceArgs": "-c \"cat > hyzo-rust/run.sh << 'ENDSCRIPT'\n#!/bin/bash\nSCRIPT_DIR=\\\"$(cd \\\"$(dirname \\\"$0\\\")\\\" && pwd)\\\"\nROOT_DIR=\\\"$(dirname \\\"$SCRIPT_DIR\\\")\\\"\nexport RUSTUP_HOME=\\\"$ROOT_DIR/.rustup\\\"\nexport CARGO_HOME=\\\"$ROOT_DIR/.cargo\\\"\nexport PATH=\\\"$ROOT_DIR/.cargo/bin:$PATH\\\"\ncd \\\"$SCRIPT_DIR/{{AppDir}}\\\"\nif [ -n \\\"{{EnvContent}}\\\" ]; then\n  echo -e '{{EnvContent}}' > .env\nfi\nexec cargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\nENDSCRIPT\nchmod +x hyzo-rust/run.sh && echo 'Run script created'\"",
+        "SkipOnFailure": false
+    },
+    {
+        "UpdateStageName": "Create Run Script",
+        "UpdateSourcePlatform": "Windows",
+        "UpdateSource": "Executable",
+        "UpdateSourceData": "powershell.exe",
+        "UpdateSourceArgs": "-NoProfile -Command \"$script = @'\n@echo off\nset SCRIPT_DIR=%~dp0\nfor %%I in (\\\"%SCRIPT_DIR%...\\\") do set ROOT_DIR=%%~fI\nset RUSTUP_HOME=%ROOT_DIR%\\.rustup\nset CARGO_HOME=%ROOT_DIR%\\.cargo\nset PATH=%ROOT_DIR%\\.cargo\\bin;%PATH%\ncd /d \\\"%SCRIPT_DIR%{{AppDir}}\\\"\npowershell -NoProfile -Command \\\"$content = '{{EnvContent}}' -replace '\\\\n', \\\"`n\\\"; if ($content) { Set-Content -Path '.env' -Value $content }\\\"\ncargo run {{ReleaseMode}} {{CargoFeatures}} {{CargoArgs}} -- {{AppArgs}}\n'@; Set-Content -Path 'hyzo-rust\\run.bat' -Value $script -Encoding ASCII; Write-Output 'Run script created'\"",
+        "SkipOnFailure": false
     }
 ]
